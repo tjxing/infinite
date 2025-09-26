@@ -19,7 +19,7 @@ jobs:
         xmake-version: latest
 
     - name: build
-      run: xmake build
-      
+      run: xmake build -y
+
     - name: test
       run: xmake test -v
