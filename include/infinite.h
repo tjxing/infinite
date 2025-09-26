@@ -1,6 +1,7 @@
 #ifndef _INFINITE_H_
 #define _INFINITE_H_
 
+#include <memory>
 #ifdef __cplusplus
 
 #include <string_view>
@@ -15,8 +16,7 @@ namespace infinite {
         virtual ~Model() {}
     };
 
-    Model* load_model(std::string_view path);
-    void free_model(Model* model);
+    std::shared_ptr<Model> load_model(std::string_view path);
 
 }
 

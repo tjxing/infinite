@@ -6,7 +6,6 @@
 #include <sys/stat.h>
 
 #include "filemap.h"
-#include "common.h"
 
 using namespace infinite;
 

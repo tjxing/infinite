@@ -163,7 +163,7 @@ public:
     inline MetadataValueType get_type() const { return this->type;}
 
     template<MetadataType T>
-    inline const T get_value() const { return *std::get_if<T>(&this->value); }
+    inline const T& get_value() const { return *std::get_if<T>(&this->value); }
 };
 
 std::tuple<Metadata, const uint8_t*> parse_metadata(const uint8_t*);

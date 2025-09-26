@@ -2,6 +2,7 @@
 #define _FILEMAP_H_
 
 #include <cstddef>
+#include <cstdint>
 #include <string_view>
 
 namespace infinite {
