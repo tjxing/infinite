@@ -4,7 +4,7 @@
 #include "infinite.h"
 #include "util.h"
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     if (argc == 1) {
         quit_with_error("No input file specified.");

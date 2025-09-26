@@ -1,0 +1,25 @@
+name: build & test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: chckout
+      uses: actions/checkout@v4
+
+    - name: install xmake
+      uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+
+    - name: build
+      run: xmake build
+      
+    - name: test
+      run: xmake test -v

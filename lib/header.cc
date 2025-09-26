@@ -17,6 +17,11 @@ void Header::validate() const
     }
 }
 
+uint32_t Header::get_version() const
+{
+    return from_little_endian(this->version);
+}
+
 uint64_t Header::get_tensor_count() const
 {
     return from_little_endian(this->tensor_count);

@@ -15,6 +15,8 @@ namespace infinite {
 
     public:
         void validate() const;
+
+        uint32_t get_version() const;
         uint64_t get_tensor_count() const;
         uint64_t get_metadata_kv_count() const;
     };
