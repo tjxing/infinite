@@ -2,12 +2,13 @@
 #define _MODEL_H_
 
 #include <string_view>
-#include <map>
+#include <unordered_map>
 
 #include "filemap.h"
 #include "header.h"
 #include "infinite.h"
 #include "metadata.h"
+#include "tensor.h"
 
 namespace infinite {
 
@@ -16,7 +17,9 @@ namespace infinite {
     private:
         FileMap filemap;
         const Header *header;
-        std::map<std::string_view, Metadata> metadata;
+        std::unordered_map<std::string_view, Metadata> metadata;
+        std::unordered_map<std::string_view, Tensor> tensor;
+        const uint8_t *data;
 
     public:
         GGUFModel(std::string_view filename);

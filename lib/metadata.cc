@@ -14,14 +14,6 @@ Metadata::Metadata(MetadataValueType type, MetadataValue value) : type(type), va
 
 ////////////////////////////////////////////////////////
 
-std::tuple<std::string_view, const uint8_t*> infinite::parse_string(const uint8_t* data)
-{
-    const uint64_t len = *reinterpret_cast<const uint64_t*>(data);
-    const uint8_t* _data = data + sizeof(uint64_t);
-    std::string_view s { reinterpret_cast<const char*>(_data), len };
-    return std::make_tuple(s, _data + len);
-}
-
 const uint8_t* skip_array(MetadataValueType type, const uint64_t len, const uint8_t* data)
 {
     const uint8_t* next = data;
@@ -73,6 +65,52 @@ std::tuple<MetadataArray, const uint8_t*> infinite::parse_array(const uint8_t* d
     const uint8_t* _data = data + sizeof(uint32_t) + sizeof(uint64_t);
     MetadataArray a { type, len, _data };
     return std::make_tuple(a, skip_array(type, len, _data));
+}
+
+std::ostream& infinite::operator<<(std::ostream& os, const Metadata& metadata)
+{
+    switch (metadata.get_type()) {
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_UINT8:
+        os << metadata.get_value<uint8_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_INT8:
+        os << metadata.get_value<int8_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_UINT16:
+        os << metadata.get_value<uint16_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_INT16:
+        os << metadata.get_value<int16_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_UINT32:
+        os << metadata.get_value<uint32_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_INT32:
+        os << metadata.get_value<int32_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_FLOAT32:
+        os << metadata.get_value<float>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_BOOL:
+        os << metadata.get_value<bool>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_STRING:
+        os << metadata.get_value<std::string_view>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_ARRAY:
+        os << "[array]";
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_UINT64:
+        os << metadata.get_value<uint64_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_INT64:
+        os << metadata.get_value<int64_t>();
+        break;
+    case MetadataValueType::GGUF_METADATA_VALUE_TYPE_FLOAT64:
+        os << metadata.get_value<double>();
+        break;
+    }
+    return os;
 }
 
 std::tuple<Metadata, const uint8_t*> infinite::parse_metadata(const uint8_t* data)

@@ -5,9 +5,12 @@
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
+#include <ostream>
 #include <string_view>
 #include <tuple>
 #include <variant>
+
+#include "string_t.h"
 
 namespace infinite {
 
@@ -56,7 +59,6 @@ std::tuple<T, const uint8_t*> parse_simple_value(const uint8_t* data)
     const T x = *reinterpret_cast<const T*>(data);
     return std::make_tuple(x, data + sizeof(T));
 }
-std::tuple<std::string_view, const uint8_t*> parse_string(const uint8_t*);
 std::tuple<MetadataArray, const uint8_t*> parse_array(const uint8_t*);
 
 template<MetadataType T> class MetadataIterable;
@@ -160,11 +162,13 @@ private:
 public:
     Metadata(MetadataValueType type, MetadataValue value);
 
-    inline MetadataValueType get_type() const { return this->type;}
-
     template<MetadataType T>
     inline const T& get_value() const { return *std::get_if<T>(&this->value); }
+    inline MetadataValueType get_type() const { return this->type; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Metadata& metadata);
 };
+std::ostream& operator<<(std::ostream& os, const Metadata& metadata);
 
 std::tuple<Metadata, const uint8_t*> parse_metadata(const uint8_t*);
 
