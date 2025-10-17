@@ -1,24 +1,9 @@
 #ifndef _INFINITE_H_
 #define _INFINITE_H_
 
-#include <memory>
 #ifdef __cplusplus
-
+#include <memory>
 #include <string_view>
-
-namespace infinite {
-
-    class Model
-    {
-    public:
-        virtual void predict(std::string_view input) = 0;
-
-        virtual ~Model() {}
-    };
-
-    std::shared_ptr<Model> load_model(std::string_view path);
-
-}
 
 extern "C" {
 #endif
@@ -31,6 +16,22 @@ void infinite_free_model(InfiniteModelHandle handle);
 void infinite_predict(InfiniteModelHandle handle, const char* input);
 
 #ifdef __cplusplus
+}
+
+namespace infinite {
+
+    class Model
+    {
+    private:
+        InfiniteModelHandle handle;
+        Model(InfiniteModelHandle handle): handle(handle) {}
+    public:
+        void predict(std::string_view input);
+        virtual ~Model();
+
+        static std::shared_ptr<Model> load_model(std::string_view path);
+    };
+
 }
 #endif
 

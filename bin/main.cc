@@ -11,7 +11,7 @@ int main(int argc, char** argv)
         quit_with_error("No input file specified.");
     }
 
-    std::shared_ptr<infinite::Model> m = infinite::load_model(argv[1]);
+    std::shared_ptr<infinite::Model> m = infinite::Model::load_model(argv[1]);
     m->predict("haha");
 
     return EXIT_SUCCESS;

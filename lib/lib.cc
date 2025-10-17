@@ -6,8 +6,16 @@
 
 namespace infinite {
 
-    std::shared_ptr<Model> load_model(std::string_view path) {
-        return std::shared_ptr<Model>(new GGUFModel { path });
+    void Model::predict(std::string_view input) {
+        return reinterpret_cast<GGUFModel*>(handle)->predict(input);
+    }
+
+    Model::~Model() {
+        delete reinterpret_cast<GGUFModel*>(handle);
+    }
+
+    std::shared_ptr<Model> Model::load_model(std::string_view path) {
+        return std::shared_ptr<Model>(new Model {new GGUFModel { path } });
     }
 
 }
@@ -21,5 +29,5 @@ void infinite_free_model(InfiniteModelHandle handle) {
 }
 
 void infinite_predict(InfiniteModelHandle handle, const char* input) {
-    reinterpret_cast<infinite::Model*>(handle)->predict(input);
+    reinterpret_cast<infinite::GGUFModel*>(handle)->predict(input);
 }

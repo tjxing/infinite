@@ -6,13 +6,12 @@
 
 #include "filemap.h"
 #include "header.h"
-#include "infinite.h"
 #include "metadata.h"
 #include "tensor.h"
 
 namespace infinite {
 
-    class GGUFModel : public Model
+    class GGUFModel
     {
     private:
         FileMap filemap;
@@ -24,7 +23,7 @@ namespace infinite {
     public:
         GGUFModel(std::string_view filename);
 
-        virtual void predict(std::string_view);
+        void predict(std::string_view);
     };
 
 }
