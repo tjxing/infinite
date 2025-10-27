@@ -28,7 +28,7 @@ FileMap::FileMap(std::string_view filename)
     }
 }
 
-FileMap::FileMap(FileMap&& other) : fd(other.fd), size(other.size), data(other.data)
+FileMap::FileMap(FileMap&& other): fd(other.fd), size(other.size), data(other.data)
 {
     other.fd = -1;
     other.size = -1;

@@ -5,9 +5,10 @@
 #include <tuple>
 #include <cstdint>
 
-namespace infinite
-{
+namespace infinite {
+
     std::tuple<std::string_view, const uint8_t*> parse_string(const uint8_t*);
+    
 }
 
 #endif

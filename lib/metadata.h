@@ -72,15 +72,15 @@ private:
 
 public:
     MetadataArray() = default;
-    MetadataArray(MetadataValueType type, uint64_t len, const uint8_t* data);
+    MetadataArray(MetadataValueType type, uint64_t len, const uint8_t* data): type(type), len(len), data(data) {}
 
     template<MetadataType T>
     MetadataIterable<T> iter() {
         return MetadataIterable<T>(this->len, this->data);
     }
 
-    inline MetadataValueType get_type() { return type; }
-    inline uint64_t get_length() { return len; }
+    inline MetadataValueType get_type() const { return type; }
+    inline uint64_t get_length() const { return len; }
 };
 
 template<MetadataType T>
@@ -103,8 +103,7 @@ public:
         using value_type = T;
         using difference_type = std::ptrdiff_t;
 
-        Iterator(uint64_t max, uint64_t current, const uint8_t* data)
-            : max(max), current(current), data(data) {}
+        Iterator(uint64_t max, uint64_t current, const uint8_t* data): max(max), current(current), data(data) {}
 
         const T& operator*() const
         {
@@ -143,7 +142,7 @@ public:
         bool operator==(const Iterator& other) const { return this->data == other.data; }
     };
 
-    MetadataIterable(uint64_t len, const uint8_t* data) : len(len), data(data) {}
+    MetadataIterable(uint64_t len, const uint8_t* data): len(len), data(data) {}
     Iterator begin() { return MetadataIterable<T>::Iterator { len, 0, data }; }
     Iterator end() { return MetadataIterable<T>::Iterator { len, len, nullptr }; }
 };
@@ -160,7 +159,7 @@ private:
     MetadataValue value;
 
 public:
-    Metadata(MetadataValueType type, MetadataValue value);
+    Metadata(MetadataValueType type, MetadataValue value): type(type), value(value) {}
 
     template<MetadataType T>
     inline const T& get_value() const { return *std::get_if<T>(&this->value); }

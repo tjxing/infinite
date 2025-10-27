@@ -11,7 +11,7 @@
 
 using namespace infinite;
 
-GGUFModel::GGUFModel(std::string_view filename) : filemap(filename)
+GGUFModel::GGUFModel(std::string_view filename): filemap(filename)
 {
     const uint8_t* data = this->filemap.get_data();
     this->header = reinterpret_cast<const Header*>(data);

@@ -5,15 +5,6 @@
 
 using namespace infinite;
 
-MetadataArray::MetadataArray(MetadataValueType type, uint64_t len, const uint8_t* data)
-    : type(type), len(len), data(data) {}
-
-////////////////////////////////////////////////////////
-
-Metadata::Metadata(MetadataValueType type, MetadataValue value) : type(type), value(value) {}
-
-////////////////////////////////////////////////////////
-
 const uint8_t* skip_array(MetadataValueType type, const uint64_t len, const uint8_t* data)
 {
     const uint8_t* next = data;
