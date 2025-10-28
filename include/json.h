@@ -5,7 +5,29 @@
 extern "C" {
 #endif
 
+typedef void* InfiniteJSONHandle;
+typedef void* InfiniteJSONObjectHandle;
+typedef void* InfiniteJSONArrayHandle;
 
+InfiniteJSONObjectHandle infinite_make_json_object();
+int infinite_json_object_add_int(InfiniteJSONObjectHandle, const char*, int);
+int infinite_json_object_add_double(InfiniteJSONObjectHandle, const char*, double);
+int infinite_json_object_add_bool(InfiniteJSONObjectHandle, const char*, int);
+int infinite_json_object_add_string(InfiniteJSONObjectHandle, const char*, const char*);
+int infinite_json_object_add_object(InfiniteJSONObjectHandle, const char*, InfiniteJSONObjectHandle);
+int infinite_json_object_add_array(InfiniteJSONObjectHandle, const char*, InfiniteJSONArrayHandle);
+int infinite_json_object_add_null(InfiniteJSONArrayHandle, const char*);
+
+InfiniteJSONArrayHandle infinite_make_json_array();
+int infinite_json_array_add_int(InfiniteJSONArrayHandle, int);
+int infinite_json_array_add_double(InfiniteJSONArrayHandle, double);
+int infinite_json_array_add_bool(InfiniteJSONArrayHandle, int);
+int infinite_json_array_add_string(InfiniteJSONArrayHandle, const char*);
+int infinite_json_array_add_object(InfiniteJSONArrayHandle, InfiniteJSONObjectHandle);
+int infinite_json_array_add_array(InfiniteJSONArrayHandle, InfiniteJSONArrayHandle);
+int infinite_json_array_add_null(InfiniteJSONArrayHandle);
+
+void infinite_free_json(InfiniteJSONHandle);
 
 ////////////////////////////////////////
 
@@ -85,24 +107,13 @@ namespace infinite {
         JSON(T v): kind(K), value(v) {}
         JSON(std::initializer_list<std::pair<const std::string_view, JSON>> data): kind(JSONKind::OBJECT), value(data) {}
 
-        static JSON array(std::initializer_list<JSON> data) {
-            JSON result = JSON(0);
-            result.kind = JSONKind::ARRAY;
-            result.value = std::vector<JSON>(data);
-            return result;
-        }
-
         template<typename... Args>
         requires (std::convertible_to<Args, JSON> && ...)
         static JSON array(Args... data) {
             return array({data...});
         }
-
-        static JSON null() {
-            JSON result = JSON(0);
-            result.kind = JSONKind::EMPTY;
-            return result;
-        }
+        static JSON array(std::initializer_list<JSON>);
+        static JSON null();
 
         inline JSONKind get_kind() const { return kind; }
         inline bool is_object() const { return kind == JSONKind::OBJECT; }
@@ -114,7 +125,7 @@ namespace infinite {
         inline bool is_null() const { return kind == JSONKind::EMPTY; }
 
         template<JSONPrimitiveType T, JSONKind K = JSONPrimitiveKind<T>>
-        inline const T& as() const {
+        const T& as() const {
             const T *v = nullptr;
             if (is_null() || (v = std::get_if<static_cast<int>(K)>(&value)) == nullptr) {
                 throw JSONValueException(typeid(T).name());
@@ -124,11 +135,20 @@ namespace infinite {
 
         template<JSONInitPrimitiveType T, JSONKind K = JSONPrimitiveKind<T>>
         inline bool operator==(T v) const { return kind == K && *std::get_if<static_cast<int>(K)>(&value) == v; }
-        inline bool operator==(const JSON& other) const { return kind == other.kind && value == other.value; }
         inline explicit operator bool() const { return is_bool() && as<bool>(); }
-
         const JSON& operator[](std::string_view) const;
         const JSON& operator[](size_t) const;
+
+        size_t size() const;
+        bool add(const JSON&);
+        bool add(JSON&&);
+        bool add(std::initializer_list<JSON>);
+        bool add(std::string_view, const JSON&);
+        bool add(std::string_view, JSON&&);
+        bool add(std::initializer_list<std::pair<std::string_view, JSON>>);
+        bool add_or_replace(std::string_view, const JSON&);
+        bool add_or_replace(std::string_view, JSON&&);
+        bool add_or_replace(std::initializer_list<std::pair<std::string_view, JSON>>);
     };
 
     namespace json {
